@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +9,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Kanit', sans-serif; }
-        .card { @apply bg-white p-6 rounded-2xl shadow-sm border border-slate-100; }
+        body {
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .card {
+            @apply bg-white p-6 rounded-2xl shadow-sm border border-slate-100;
+        }
+
         .loader {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #be185d;
@@ -18,11 +25,25 @@
             height: 40px;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        table { font-family: 'Kanit', sans-serif; }
-        th { @apply whitespace-nowrap; }
-        
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        table {
+            font-family: 'Kanit', sans-serif;
+        }
+
+        th {
+            @apply whitespace-nowrap;
+        }
+
         .link-icon {
             @apply inline-flex items-center justify-center ml-2 p-1.5 rounded-md bg-pink-50 text-pink-600 hover:bg-pink-600 hover:text-white transition-all duration-200;
         }
@@ -30,24 +51,29 @@
         .view-btn {
             @apply px-5 py-2 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer border shadow-sm flex items-center gap-2;
         }
+
         .view-btn.active {
             @apply bg-pink-600 text-white border-pink-600 shadow-pink-200 ring-4 ring-pink-50;
         }
+
         .view-btn.inactive {
             @apply bg-white text-slate-600 border-slate-200 hover:border-pink-300 hover:text-pink-600;
         }
-        
+
         .sticky-col {
             @apply sticky left-0 bg-white z-10 border-r;
         }
+
         thead .sticky-col {
             @apply bg-slate-100 z-30;
         }
     </style>
 </head>
+
 <body class="bg-slate-50 text-slate-800">
 
-    <header class="bg-gradient-to-r from-pink-700 via-pink-800 to-indigo-900 text-white py-12 px-6 shadow-lg relative overflow-hidden">
+    <header
+        class="bg-gradient-to-r from-pink-700 via-pink-800 to-indigo-900 text-white py-12 px-6 shadow-lg relative overflow-hidden">
         <div class="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -55,18 +81,32 @@
                     <h1 class="text-3xl md:text-4xl font-bold tracking-tight">สถิติผลการตรวจ HPV DNA Test</h1>
                     <p class="text-pink-100 mt-2 text-lg">รายงานผลการตรวจแยกตามประเภทและความผิดปกติ</p>
                 </div>
-                
+
                 <div class="flex bg-black/20 p-1 rounded-xl backdrop-blur-md border border-white/10 shadow-inner">
-                    <a href="https://forms.gle/g4mNd6raXNv1xv8t6" target="_blank" class="px-5 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-white/20 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <a href="https://forms.gle/g4mNd6raXNv1xv8t6" target="_blank"
+                        class="px-5 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-white/20 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
                         Linkส่งตรวจ
                     </a>
-                    <a href="hpvstock.html" class="px-5 py-2.5 rounded-lg text-sm font-medium transition-all hover:bg-white/20 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    <a href="hpvstock.html"
+                        class="px-5 py-2.5 rounded-lg text-sm font-medium transition-all hover:bg-white/20 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
                         สถิติการเบิก
                     </a>
-                    <a href="hpvresult.html" class="px-5 py-2.5 rounded-lg text-sm font-medium bg-white text-indigo-900 shadow-sm flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <a href="hpvresult.html"
+                        class="px-5 py-2.5 rounded-lg text-sm font-medium bg-white text-indigo-900 shadow-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                            </path>
+                        </svg>
                         ผลการตรวจ
                     </a>
                 </div>
@@ -75,8 +115,9 @@
     </header>
 
     <main class="max-w-7xl mx-auto p-6 space-y-6 -mt-8 relative z-20">
-        
-        <div id="loading-overlay" class="fixed inset-0 bg-white/90 z-50 flex items-center justify-center flex-col gap-4">
+
+        <div id="loading-overlay"
+            class="fixed inset-0 bg-white/90 z-50 flex items-center justify-center flex-col gap-4">
             <div class="loader"></div>
             <p class="font-medium text-slate-600 animate-pulse">กำลังประมวลผลข้อมูล...</p>
         </div>
@@ -111,7 +152,8 @@
                 <div class="h-80"><canvas id="typePieChart"></canvas></div>
             </div>
             <div class="card lg:col-span-2">
-                <h3 class="font-bold text-lg mb-6 text-slate-700" id="chartTitle">เปรียบเทียบผลตรวจแยกตามหน่วยงานหลัก</h3>
+                <h3 class="font-bold text-lg mb-6 text-slate-700" id="chartTitle">เปรียบเทียบผลตรวจแยกตามหน่วยงานหลัก
+                </h3>
                 <div class="h-80"><canvas id="hospitalBarChart"></canvas></div>
             </div>
         </div>
@@ -119,34 +161,57 @@
         <div class="card overflow-hidden">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-6">
                 <div class="flex flex-col gap-4">
-                    <h3 class="font-bold text-lg text-slate-700" id="tableTitle">ข้อมูลรายหน่วยงานหลัก (เรียงจากยอดตรวจสูงสุด)</h3>
+                    <h3 class="font-bold text-lg text-slate-700" id="tableTitle">ข้อมูลรายหน่วยงานหลัก
+                        (เรียงจากยอดตรวจสูงสุด)</h3>
                     <div class="flex flex-wrap gap-3">
                         <button onclick="switchView('main-hospital')" id="btn-main-hospital" class="view-btn active">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                </path>
+                            </svg>
                             รายหน่วยงานหลัก
                         </button>
                         <button onclick="switchView('hospital')" id="btn-hospital" class="view-btn inactive">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                </path>
+                            </svg>
                             รายหน่วยงานย่อย
                         </button>
                         <button onclick="switchView('district')" id="btn-district" class="view-btn inactive">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
                             รายอำเภอ
                         </button>
                     </div>
                 </div>
                 <div class="relative w-full md:w-64 self-end md:self-center">
-                    <input type="text" id="tableSearch" placeholder="ค้นหาข้อมูล..." class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-pink-500 outline-none transition-all pl-10 shadow-sm">
-                    <svg class="w-4 h-4 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" id="tableSearch" placeholder="ค้นหาข้อมูล..."
+                        class="w-full border border-slate-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-pink-500 outline-none transition-all pl-10 shadow-sm">
+                    <svg class="w-4 h-4 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
                 </div>
             </div>
             <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
                 <table class="min-w-full divide-y divide-slate-200" id="mainTable">
                     <thead class="bg-slate-50 text-[11px] font-bold text-slate-600">
                         <tr>
-                            <th class="px-6 py-4 text-left border-r sticky-col z-30" rowspan="2" id="th-name">หน่วยงานหลัก</th>
-                            <th class="px-4 py-2 text-center border-r border-b bg-pink-100/40" colspan="4">Self-test</th>
-                            <th class="px-4 py-2 text-center border-r border-b bg-indigo-100/40" colspan="4">Clinician</th>
+                            <th class="px-6 py-4 text-left border-r sticky-col z-30" rowspan="2" id="th-name">
+                                หน่วยงานหลัก</th>
+                            <th class="px-4 py-2 text-center border-r border-b bg-pink-100/40" colspan="4">Self-test
+                            </th>
+                            <th class="px-4 py-2 text-center border-r border-b bg-indigo-100/40" colspan="4">Clinician
+                            </th>
                             <th class="px-4 py-4 text-center border-r bg-slate-100/50" rowspan="2">LBC</th>
                             <th class="px-4 py-4 text-center bg-slate-100" rowspan="2">รวม</th>
                         </tr>
@@ -172,12 +237,12 @@
 
     <script>
         const SPREADSHEET_ID = '1474eE5jGXvnw7QrhOhQwt96VJGLJpTG2vTPu4OVbHxM';
-        
+
         const GID_HOSPITAL = '1541013318';
         const GID_DISTRICT = '199543958';
         const GID_MAIN_HOSPITAL = '922932469';
 
-        let currentView = 'main-hospital'; 
+        let currentView = 'main-hospital';
         let chartInstances = {};
 
         // ลิงก์กลางที่ใช้ได้ทุกหน่วยงาน
@@ -206,32 +271,34 @@
             "รพ.สต.บ้านพุุม่วง": "https://drive.google.com/drive/folders/1pI_AdDJ7bPs5p9uMuUvFdaQkpDCvPEvm",
             "รพ.สต.วัดเขาตะเครา": "https://drive.google.com/drive/folders/1mee2_eAMz-3lqus9pyh05LTOi0WqLJmY",
             "รพ.สต.นิคมฯ": "https://drive.google.com/drive/folders/1tHYPubSaTohj0vUUd3wp376EQgbcYqsm",
-            "รพ.สต.บางครก": "https://drive.google.com/drive/folders/122t4LWTWaXcmktFUxEC6KzovkV6fTtN0",     
-            "รพ.สต.บางตะบูนออก": "https://drive.google.com/drive/folders/1AXtLUZc1oARVR7ilHh5B42uJV1e5INoC",      
-            "รพ.สต.บ้านบางหอ": "https://drive.google.com/drive/folders/1X-uhXLbTe4tSg9Tn3T7oBuNpPqrVL65C",      
-            "รพ.สต.ปากทะเล": "https://drive.google.com/drive/folders/1aaMaShTuCFTL6L53u8QhHlJv9KnLW3k3",      
-            "ศบส.เทศบาลเมืองชะอำ": "https://drive.google.com/drive/folders/1epsE6orsABbvOW-IDxjqveMu3ozDPwK-",                 
+            "รพ.สต.บางครก": "https://drive.google.com/drive/folders/122t4LWTWaXcmktFUxEC6KzovkV6fTtN0",
+            "รพ.สต.บางตะบูนออก": "https://drive.google.com/drive/folders/1AXtLUZc1oARVR7ilHh5B42uJV1e5INoC",
+            "รพ.สต.บ้านบางหอ": "https://drive.google.com/drive/folders/1X-uhXLbTe4tSg9Tn3T7oBuNpPqrVL65C",
+            "รพ.สต.ปากทะเล": "https://drive.google.com/drive/folders/1aaMaShTuCFTL6L53u8QhHlJv9KnLW3k3",
+            "ศบส.เทศบาลเมืองชะอำ": "https://drive.google.com/drive/folders/1epsE6orsABbvOW-IDxjqveMu3ozDPwK-",
             "หนองหญ้าปล้อง": "https://drive.google.com/drive/folders/18aKfqkAbadF2ul_JXpYAOrVVAriLbmNj",
             "เขาย้อย": "https://drive.google.com/drive/folders/14E4-xPVR7-8VggywFLbK8KSzecHDecTK",
             "ชะอำ": "https://drive.google.com/drive/folders/1EQXvjeGYlI4IWFFXBozeaJbZfr-sV88h",
             "แก่งกระจาน": "https://drive.google.com/drive/folders/1gofqZngF2hGWNIyiIC31t2R2CveLVpdZ",
             "บ้านแหลม": "https://drive.google.com/drive/folders/1UG9jZt10DgdgY-ToVKUNT1-ydfS403oN",
             "ท่ายาง": "https://drive.google.com/drive/folders/1fDGPmMIKkhymEPBpcbPbxAvAT0qFbvdg",
-            "สสอ.บ้านแหลม": "https://drive.google.com/drive/folders/1h3WMO-NE-4Oa_WiKQmVrS7kvv47jisA9",     
-            "สสอ.ท่ายาง": "https://drive.google.com/drive/folders/1sQkCSe3ePJsgj_UwxarCWAaQ8tRZZj48",         
+            "สสอ.บ้านแหลม": "https://drive.google.com/drive/folders/1h3WMO-NE-4Oa_WiKQmVrS7kvv47jisA9",
+            "สสอ.ท่ายาง": "https://drive.google.com/drive/folders/1sQkCSe3ePJsgj_UwxarCWAaQ8tRZZj48",
+            "รพ.สต.บ้านนาบัว": "https://drive.google.com/drive/folders/1xOZ_hu_cUkp4sGlbn_iL_s6gycYUzkg5",
+            "สอน.ป่าเด็ง": "https://drive.google.com/drive/folders/1Bjb81Rb42b0TnTlPCnC8X_fLRs9V-ehV",
         };
 
         function switchView(view) {
             currentView = view;
-            
+
             document.getElementById('btn-hospital').className = `view-btn ${view === 'hospital' ? 'active' : 'inactive'}`;
             document.getElementById('btn-main-hospital').className = `view-btn ${view === 'main-hospital' ? 'active' : 'inactive'}`;
             document.getElementById('btn-district').className = `view-btn ${view === 'district' ? 'active' : 'inactive'}`;
-            
+
             let title = 'ข้อมูลรายหน่วยงานหลัก (เรียงจากยอดตรวจสูงสุด)';
             let thName = 'หน่วยงานหลัก';
             let chartTitle = 'เปรียบเทียบผลตรวจแยกตามหน่วยงานหลัก';
-            
+
             if (view === 'hospital') {
                 title = 'ข้อมูลรายหน่วยงานย่อย (เรียงจากยอดตรวจสูงสุด)';
                 thName = 'หน่วยงานย่อย';
@@ -241,11 +308,11 @@
                 thName = 'อำเภอ';
                 chartTitle = 'เปรียบเทียบผลตรวจแยกตามอำเภอ';
             }
-            
+
             document.getElementById('tableTitle').innerText = title;
             document.getElementById('th-name').innerText = thName;
             document.getElementById('chartTitle').innerText = chartTitle;
-            
+
             fetchData();
         }
 
@@ -263,8 +330,8 @@
                 const rows = data.split('\n').map(row => {
                     return row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(cell => cell.trim().replace(/^"|"$/g, ''));
                 });
-                
-                processData(rows.slice(3)); 
+
+                processData(rows.slice(3));
                 document.getElementById('loading-overlay').classList.add('hidden');
             } catch (error) {
                 console.error('Error:', error);
@@ -297,7 +364,7 @@
                 const cInv = parseNum(row[11]);
                 const lbc = parseNum(row[13]);
 
-                const totalInRow = (s16+s18+sOther+sNeg+sInv) + (c16+c18+cOther+cNeg+cInv) + lbc;
+                const totalInRow = (s16 + s18 + sOther + sNeg + sInv) + (c16 + c18 + cOther + cNeg + cInv) + lbc;
 
                 dataList.push({ name, s16, s18, sOther, sNeg, sInv, c16, c18, cOther, cNeg, cInv, lbc, total: totalInRow });
 
@@ -317,10 +384,10 @@
 
             dataList.forEach(item => {
                 stats.hospitals.push({ name: item.name, n16: item.s16 + item.c16, n18: item.s18 + item.c18, nOther: item.sOther + item.cOther, nNeg: item.sNeg + item.cNeg });
-                
+
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition-colors";
-                
+
                 // ค้นหาลิงก์จากรายการลิงก์กลาง
                 const link = hospitalLinks[item.name];
                 const linkHtml = link ? `<a href="${link}" target="_blank" class="link-icon" title="เปิด Google Drive"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>` : '';
@@ -363,7 +430,7 @@
             document.getElementById('total-pos').innerText = totalPositive.toLocaleString();
             document.getElementById('total-neg').innerText = stats.neg.toLocaleString();
             document.getElementById('total-invalid').innerText = stats.invalid.toLocaleString();
-            const getRate = (v) => ((v/totalTests)*100 || 0).toFixed(1) + '%';
+            const getRate = (v) => ((v / totalTests) * 100 || 0).toFixed(1) + '%';
             document.getElementById('pos-percent').innerText = getRate(totalPositive);
             document.getElementById('neg-percent').innerText = getRate(stats.neg);
 
@@ -384,11 +451,11 @@
             });
 
             if (chartInstances.bar) chartInstances.bar.destroy();
-            const chartData = s.hospitals.slice(0, 15); 
+            const chartData = s.hospitals.slice(0, 15);
             chartInstances.bar = new Chart(document.getElementById('hospitalBarChart'), {
                 type: 'bar',
                 data: {
-                    labels: chartData.map(h => h.name.length > 12 ? h.name.substring(0,10)+'...' : h.name),
+                    labels: chartData.map(h => h.name.length > 12 ? h.name.substring(0, 10) + '...' : h.name),
                     datasets: [
                         { label: 'HPV 16', data: chartData.map(h => h.n16), backgroundColor: '#e11d48' },
                         { label: 'HPV 18', data: chartData.map(h => h.n18), backgroundColor: '#fb7185' },
@@ -405,7 +472,7 @@
             });
         }
 
-        document.getElementById('tableSearch').addEventListener('input', function() {
+        document.getElementById('tableSearch').addEventListener('input', function () {
             const val = this.value.toLowerCase();
             document.querySelectorAll('#data-table-body tr').forEach(row => {
                 row.style.display = row.cells[0].innerText.toLowerCase().includes(val) ? '' : 'none';
@@ -415,4 +482,5 @@
         window.onload = fetchData;
     </script>
 </body>
+
 </html>
