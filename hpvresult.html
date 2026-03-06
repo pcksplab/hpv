@@ -45,7 +45,11 @@
         }
 
         .link-icon {
-            @apply inline-flex items-center justify-center ml-2 p-1.5 rounded-md bg-pink-50 text-pink-600 hover:bg-pink-600 hover:text-white transition-all duration-200;
+            @apply inline-flex items-center justify-center p-1.5 rounded-md bg-pink-50 text-pink-600 hover:bg-pink-600 hover:text-white transition-all duration-200;
+        }
+
+        .pdf-icon {
+            @apply inline-flex items-center justify-center p-1.5 rounded-md bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 border border-red-100;
         }
 
         .view-btn {
@@ -207,7 +211,11 @@
                     <thead class="bg-slate-50 text-[11px] font-bold text-slate-600">
                         <tr>
                             <th class="px-6 py-4 text-left border-r sticky-col z-30" rowspan="2" id="th-name">
-                                หน่วยงานหลัก</th>
+                                หน่วยงานหลัก
+                                <div class="text-[10px] text-slate-400 font-normal">(กดเพื่อดูผล)</div>
+                            </th>
+                            <th class="px-2 py-4 text-center border-r" rowspan="2">
+                                ดูเฉพาะ<br>ผล Pos</th>
                             <th class="px-4 py-2 text-center border-r border-b bg-pink-100/40" colspan="4">Self-test
                             </th>
                             <th class="px-4 py-2 text-center border-r border-b bg-indigo-100/40" colspan="4">Clinician
@@ -286,6 +294,7 @@
             "สสอ.ท่ายาง": "https://drive.google.com/drive/folders/1sQkCSe3ePJsgj_UwxarCWAaQ8tRZZj48",
             "รพ.สต.บ้านนาบัว": "https://drive.google.com/drive/folders/1xOZ_hu_cUkp4sGlbn_iL_s6gycYUzkg5",
             "สอน.ป่าเด็ง": "https://drive.google.com/drive/folders/1Bjb81Rb42b0TnTlPCnC8X_fLRs9V-ehV",
+            "สสอ.ชะอำ": "https://drive.google.com/drive/folders/1jsKVQTITc8f0aIZtBWnWCM0LNB-c0wZF",
             "รพ.สต.ไร่ใหม่พัฒนา": "https://drive.google.com/drive/folders/1d8STtc2dWLe5Ustpr9xsGgA6Ixf2m7HF",
             "รพ.สต.บ้านทุ่งจับญวน": "https://drive.google.com/drive/folders/1Oncn7HlCdAXeBLgD4CHdDwcm3pbADA3e",
             "รพ.สต.มาบปลาเค้า": "https://drive.google.com/drive/folders/1h4_oJG6JmiLI1vvBOvCuK9UA5ROLb1wf",
@@ -314,7 +323,7 @@
             }
 
             document.getElementById('tableTitle').innerText = title;
-            document.getElementById('th-name').innerText = thName;
+            document.getElementById('th-name').querySelector('div:first-child').innerText = thName;
             document.getElementById('chartTitle').innerText = chartTitle;
 
             fetchData();
@@ -394,10 +403,33 @@
 
                 // ค้นหาลิงก์จากรายการลิงก์กลาง
                 const link = hospitalLinks[item.name];
-                const linkHtml = link ? `<a href="${link}" target="_blank" class="link-icon" title="เปิด Google Drive"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>` : '';
+                let nameHtml = `<span>${item.name}</span>`;
+                let pdfBtnHtml = '';
+
+                if (link) {
+                    const folderId = link.split('/folders/')[1]?.split('?')[0];
+                    const pdfLink = `https://drive.google.com/drive/u/0/search?q=type:pdf%20parent:${folderId}`;
+
+                    nameHtml = `
+                        <a href="${link}" target="_blank" class="hover:text-pink-700 hover:underline decoration-pink-300 transition-all font-semibold text-sm">${item.name}</a>
+                    `;
+
+                    pdfBtnHtml = `
+                        <a href="${pdfLink}" target="_blank" class="pdf-icon" title="ค้นหา PDF รายงานผล">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0118 7.586V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </a>
+                    `;
+                }
 
                 tr.innerHTML = `
-                    <td class="px-6 py-3 font-medium text-left sticky-col z-10 flex items-center justify-between"><span>${item.name}</span>${linkHtml}</td>
+                    <td class="px-6 py-3 text-left sticky-col z-10 min-w-[200px]">
+                        ${nameHtml}
+                    </td>
+                    <td class="px-4 py-3 border-r">
+                        ${pdfBtnHtml}
+                    </td>
                     <td class="text-right px-4 border-r text-rose-600 font-bold">${item.s16 || '-'}</td>
                     <td class="text-right px-4 border-r text-rose-500 font-semibold">${item.s18 || '-'}</td>
                     <td class="text-right px-4 border-r text-orange-500">${item.sOther || '-'}</td>
@@ -415,6 +447,7 @@
             document.getElementById('data-table-foot').innerHTML = `
                 <tr class="bg-slate-100">
                     <td class="px-6 py-4 sticky-col z-10 text-left">รวมทั้งหมด</td>
+                    <td class="px-4 py-4 border-r"></td>
                     <td class="text-right px-4 border-r">${totals.s16.toLocaleString()}</td>
                     <td class="text-right px-4 border-r">${totals.s18.toLocaleString()}</td>
                     <td class="text-right px-4 border-r">${totals.sOther.toLocaleString()}</td>
