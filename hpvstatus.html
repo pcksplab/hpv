@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบตรวจสอบสถานะรายงาน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .animate-spin-custom {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<!-- Header -->
+<header
+    class="bg-gradient-to-r from-pink-700 via-pink-800 to-indigo-900 border-b border-white/10 shadow-lg relative overflow-hidden py-12 px-6">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div class="flex items-center gap-3 w-full lg:w-auto">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white">ตรวจสอบสถานะการตรวจ HPV DNA Test
+                </h1>
+                <p id="status-text" class="text-pink-100 mt-2 text-lg">กำลังโหลดข้อมูล...</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col items-end gap-4 w-full lg:w-auto">
+            <div
+                class="grid grid-cols-2 md:flex bg-black/20 p-1 rounded-xl backdrop-blur-md border border-white/10 shadow-inner w-full lg:w-auto overflow-hidden">
+                <a href="https://forms.gle/g4mNd6raXNv1xv8t6" target="_blank"
+                    class="px-3 py-2 md:px-5 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all hover:bg-white/20 flex items-center justify-center md:justify-start gap-2 text-white">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    <span class="truncate">Linkส่งตรวจ</span>
+                </a>
+                <a href="hpvstatus.html"
+                    class="px-3 py-2 md:px-5 md:py-2.5 rounded-lg text-xs md:text-sm font-medium bg-white text-indigo-900 shadow-sm flex items-center justify-center md:justify-start gap-2">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    <span class="truncate">ตรวจสอบสถานะ</span>
+                </a>
+                <a href="hpvstock.html"
+                    class="px-3 py-2 md:px-5 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all hover:bg-white/20 flex items-center justify-center md:justify-start gap-2 text-white">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                    <span class="truncate">สถิติการเบิก</span>
+                </a>
+                <a href="hpvresult.html"
+                    class="px-3 py-2 md:px-5 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all hover:bg-white/20 flex items-center justify-center md:justify-start gap-2 text-white">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                        </path>
+                    </svg>
+                    <span class="truncate">สถิติการตรวจ</span>
+                </a>
+            </div>
+
+            <div class="flex w-full md:w-auto gap-3">
+                <div class="relative flex-1 md:w-72">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-white/50 w-4 h-4" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                    <input type="text" id="search-input" placeholder="ค้นหาหน่วยงาน..."
+                        class="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-white/40 text-sm outline-none transition-all text-white placeholder-white/40">
+                </div>
+                <button id="refresh-btn"
+                    class="p-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 shadow-sm transition-all active:scale-95">
+                    <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                        <path d="M21 3v5h-5" />
+                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                        <path d="M8 16H3v5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto p-6 space-y-6 -mt-8 relative z-20">
+    <div id="error-container"
+        class="hidden bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl flex items-center gap-2 text-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" x2="12" y1="8" y2="12" />
+            <line x1="12" x2="12.01" y1="16" y2="16" />
+        </svg>
+        <p id="error-message"></p>
+    </div>
+
+    <!-- Desktop View -->
+    <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <table class="w-full text-left border-collapse table-fixed">
+            <thead>
+                <tr class="bg-slate-50 border-b border-slate-200">
+                    <th class="p-4 text-sm font-bold uppercase text-slate-500 w-[180px]">วันที่ส่งตรวจ</th>
+                    <th class="p-4 text-sm font-bold uppercase text-slate-500 w-[220px]">หน่วยงาน</th>
+                    <th class="p-4 text-sm font-bold uppercase text-slate-500">ชื่อไฟล์</th>
+                    <th class="p-4 text-sm font-bold uppercase text-slate-500 text-center w-[150px]">สถานะ</th>
+                </tr>
+            </thead>
+            <tbody id="desktop-tbody" class="divide-y divide-slate-100">
+                <!-- Data will be injected here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mobile View -->
+    <div id="mobile-container" class="md:hidden space-y-3">
+        <!-- Data will be injected here -->
+    </div>
+
+    <div id="loading-skeleton" class="space-y-3">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 animate-pulse space-y-3">
+            <div class="h-4 bg-slate-100 rounded w-1/3"></div>
+            <div class="h-5 bg-slate-200 rounded w-full"></div>
+            <div class="h-10 bg-slate-50 rounded w-full"></div>
+        </div>
+    </div>
+
+    <p id="footer-text"
+        class="hidden text-center text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] py-8 border-t border-slate-100 mt-4">
+        — ข้อมูลแสดงตามวันที่ล่าสุด —
+    </p>
+</main>
+
+<script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTNe0I0UR1Hfjw1qn_vyMGTWyweFFZl-aUFDq4ALllLY6clGxhKaxyM6orS_ZMxu3J5qAmU4WdvT2TL/pub?gid=86987800&single=true&output=csv';
+    const LINKS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTNe0I0UR1Hfjw1qn_vyMGTWyweFFZl-aUFDq4ALllLY6clGxhKaxyM6orS_ZMxu3J5qAmU4WdvT2TL/pub?output=csv&gid=265832376';
+
+    let allData = [];
+    let hospitalLinks = {};
+    let searchTerm = '';
+
+    async function loadHospitalLinks() {
+        try {
+            const response = await fetch(LINKS_CSV_URL);
+            const data = await response.text();
+            const lines = data.split('\n');
+            lines.forEach(line => {
+                const row = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(cell => cell.trim().replace(/^"|"$/g, ''));
+                if (row.length >= 2 && row[0]) {
+                    hospitalLinks[row[0]] = row[1];
+                }
+            });
+            console.log('โหลดลิงก์หน่วยงานแล้ว:', Object.keys(hospitalLinks).length);
+        } catch (error) {
+            console.error('เกิดข้อผิดพลาดในการโหลดลิงก์:', error);
+        }
+    }
+
+    const parseDateTime = (str) => {
+        if (!str || typeof str !== 'string') return 0;
+        try {
+            const [datePart, timePart] = str.trim().split(/\s+/);
+            const [d, m, y] = datePart.split('/').map(Number);
+            const year = y > 2500 ? y - 543 : y;
+            let hour = 0, min = 0, sec = 0;
+            if (timePart) {
+                const [hh, mm, ss] = timePart.split(':').map(Number);
+                hour = hh || 0; min = mm || 0; sec = ss || 0;
+            }
+            return new Date(year, m - 1, d, hour, min, sec).getTime();
+        } catch (e) { return 0; }
+    };
+
+    const parseCSV = (text) => {
+        const lines = text.split(/\r?\n/);
+        return lines.map(line => {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') inQuotes = !inQuotes;
+                else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current);
+            return result;
+        });
+    };
+
+    const renderData = () => {
+        const filtered = allData.filter(row => {
+            const s = searchTerm.toLowerCase();
+            return row.agency.toLowerCase().includes(s) ||
+                row.fileName.toLowerCase().includes(s) ||
+                row.sentAt.toLowerCase().includes(s);
+        });
+
+        const desktopTbody = document.getElementById('desktop-tbody');
+        const mobileContainer = document.getElementById('mobile-container');
+        const statusText = document.getElementById('status-text');
+
+        statusText.innerText = searchTerm ? `พบข้อมูล: ${filtered.length} รายการ` : 'ตรวจสอบสถานะการตรวจ';
+
+        desktopTbody.innerHTML = '';
+        mobileContainer.innerHTML = '';
+
+        if (filtered.length === 0) {
+            const emptyMsg = `<div class="text-center py-12 text-slate-400 text-sm italic bg-white rounded-xl border border-dashed border-slate-300 w-full">ไม่พบข้อมูลที่ค้นหา</div>`;
+            mobileContainer.innerHTML = emptyMsg;
+            desktopTbody.innerHTML = `<tr><td colspan="4">${emptyMsg}</td></tr>`;
+            return;
+        }
+
+        filtered.forEach(row => {
+            const isReported = row.reportedAt && row.reportedAt.trim() !== '';
+            const link = row.link;
+            const hasValidLink = link && link.startsWith('http');
+
+            const agencyLink = hospitalLinks[row.agency.trim()];
+            const agencyHtml = agencyLink
+                ? `<a href="${agencyLink}" target="_blank" class="hover:text-pink-700 hover:underline decoration-pink-300 transition-all">${row.agency}</a>`
+                : row.agency;
+
+            // Desktop Row
+            const tr = document.createElement('tr');
+            tr.className = `transition-colors group hover:bg-slate-50/50`;
+            tr.innerHTML = `
+                    <td class="p-4 text-sm text-slate-500 font-mono italic">${row.sentAt}</td>
+                    <td class="p-4 font-semibold text-sm text-slate-800 line-clamp-2">${agencyHtml}</td>
+                    <td class="p-4 text-sm">
+                        ${hasValidLink ? `
+                            <a href="${link}" target="_blank" class="text-indigo-600 hover:text-pink-600 hover:underline font-medium break-all transition-all line-clamp-2 leading-snug">
+                                ${row.fileName}
+                            </a>
+                        ` : `
+                            <span class="text-slate-600 line-clamp-2 break-all leading-snug">${row.fileName}</span>
+                        `}
+                    </td>
+                    <td class="p-4 text-center">
+                        ${isReported ? `
+                            <div class="flex flex-col items-center">
+                                <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase border border-emerald-200 shadow-sm">รายงานผลแล้ว</span>
+                                <span class="text-[9px] text-slate-400 mt-1 font-mono uppercase tracking-tighter">${row.reportedAt.replace('|', ' ')}</span>
+                            </div>
+                        ` : `<span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-400 text-[10px] font-bold uppercase border border-slate-200">รอดำเนินการ</span>`}
+                    </td>
+                `;
+            desktopTbody.appendChild(tr);
+
+            // Mobile Card
+            const card = document.createElement('div');
+            card.className = `bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-200`;
+            card.innerHTML = `
+                    <div class="h-1 w-full ${isReported ? 'bg-emerald-500' : 'bg-slate-300'}"></div>
+                    <div class="p-4 space-y-3">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="flex items-center gap-1.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-pink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                                <span class="text-[10px] font-mono text-slate-500 font-bold">${row.sentAt}</span>
+                            </div>
+                            ${isReported ? `
+                                <div class="flex flex-col items-end">
+                                    <span class="flex items-center gap-1 text-[10px] font-bold text-emerald-600 uppercase">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ส่งแล้ว
+                                    </span>
+                                    <span class="text-[9px] text-slate-400 font-mono mt-0.5">${row.reportedAt.replace('|', ' ')}</span>
+                                </div>
+                            ` : `
+                                <span class="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> รอรายงาน
+                                </span>
+                            `}
+                        </div>
+                        <div class="space-y-1">
+                            <div class="text-sm font-bold text-slate-800 leading-tight">${agencyHtml}</div>
+                            <div class="mt-1">
+                                ${hasValidLink ? `
+                                    <a href="${link}" target="_blank" class="text-indigo-600 hover:text-pink-600 hover:underline text-[11px] font-medium break-all leading-snug block line-clamp-2 tracking-tight transition-all">
+                                        ${row.fileName}
+                                    </a>
+                                ` : `
+                                    <div class="text-[11px] text-slate-500 break-all leading-snug font-medium line-clamp-2">${row.fileName}</div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            mobileContainer.appendChild(card);
+        });
+    };
+
+    const fetchData = async () => {
+        const refreshIcon = document.getElementById('refresh-icon');
+        const skeleton = document.getElementById('loading-skeleton');
+        const errorContainer = document.getElementById('error-container');
+        const footer = document.getElementById('footer-text');
+
+        refreshIcon.classList.add('animate-spin-custom');
+        skeleton.classList.remove('hidden');
+        errorContainer.classList.add('hidden');
+
+        try {
+            const response = await fetch(CSV_URL);
+            if (!response.ok) throw new Error('ไม่สามารถเข้าถึงข้อมูลได้');
+            const csvText = await response.text();
+            const rows = parseCSV(csvText);
+
+            allData = rows.slice(1)
+                .map((cols, index) => ({
+                    id: index,
+                    sentAt: cols[0] || '',
+                    agency: cols[1] || '',
+                    fileName: cols[3] || '',
+                    reportedAt: cols[6] || '',
+                    link: cols[7] || '',
+                    timestamp: parseDateTime(cols[0])
+                }))
+                .filter(item => item.agency && item.agency.trim() !== '' && !item.agency.includes('ชื่อหน่วยงาน'))
+                .sort((a, b) => b.timestamp - a.timestamp);
+
+            renderData();
+            footer.classList.remove('hidden');
+        } catch (err) {
+            errorContainer.classList.remove('hidden');
+            document.getElementById('error-message').innerText = err.message;
+        } finally {
+            refreshIcon.classList.remove('animate-spin-custom');
+            skeleton.classList.add('hidden');
+        }
+    };
+
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        searchTerm = e.target.value;
+        renderData();
+    });
+
+    document.getElementById('refresh-btn').addEventListener('click', fetchData);
+
+    window.onload = async () => {
+        await loadHospitalLinks();
+        fetchData();
+    };
+
+</script>
+</body>
+
+</html>
