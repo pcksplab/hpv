@@ -263,52 +263,26 @@
         let currentView = 'main-hospital';
         let chartInstances = {};
 
-        // ลิงก์กลางที่ใช้ได้ทุกหน่วยงาน
-        const hospitalLinks = {
-            "รพ.หนองหญ้าปล้อง": "https://drive.google.com/drive/folders/1gWWliXgVGtzGYhvcmCoJYLyHonkufGZp?usp=drive_link",
-            "รพ.เขาย้อย": "https://drive.google.com/drive/folders/1oSuIKWRFVmJQk9xxKTKXnGGk4ELpJRlR?usp=drive_link",
-            "รพ.ชะอำ": "https://drive.google.com/drive/folders/1SlLNxcyIhVhk4AA493akVfqr6QRuywCQ?usp=drive_link",
-            "รพ.สต.บ้านห้วย": "https://drive.google.com/drive/folders/1fxK4cEZck3hT47yFi-20Nr5M_6lsh50o?usp=drive_link",
-            "รพ.สต.บ้านพุม่วง": "https://drive.google.com/drive/folders/1pI_AdDJ7bPs5p9uMuUvFdaQkpDCvPEvm?usp=drive_link",
-            "รพ.สต.บ้านหนองปืนแตก": "https://drive.google.com/drive/folders/16cxpd18rTcI_JbxFhO-FgFJEb-H02UBQ?usp=drive_link",
-            "รพ.ท่ายาง": "https://drive.google.com/drive/folders/1pHf_dRzDTznfSXgXx-vu2kcxSwnVEaRS?usp=drive_link",
-            "รพ.แก่งกระจาน": "https://drive.google.com/drive/folders/1MUsAtlO7t6fi3s111KBHK0bXk-fHul1e?usp=drive_link",
-            "รพ.สต.บ้านเขากลิ้ง": "https://drive.google.com/drive/folders/18USD8bGakAyJJ79r74VncZqSgO_wk5Sg?usp=drive_link",
-            "รพ.บ้านแหลม": "https://drive.google.com/drive/folders/1J5wR7L4s_PHkQqGZOjAjGZO5ZY9cHd9G?usp=drive_link",
-            "รพ.สต.บ้านฝั่งท่า": "https://drive.google.com/drive/folders/1gVecH1NWujqc22nifl8TPJU1sQPaiDEI?usp=drive_link",
-            "รพ.สต.บ้านซ่อง": "https://drive.google.com/drive/folders/1PgCZJBIPLAgqg8Cajc6EoisNJQKCXtf0?usp=drive_link",
-            "รพ.สต.ท่าแร้งออก": "https://drive.google.com/drive/folders/1wh4XFy8Ccuv41Oi2HsIwK7NvsMlS3w2M?usp=drive_link",
-            "รพ.สต.นิคม": "https://drive.google.com/drive/folders/1tHYPubSaTohj0vUUd3wp376EQgbcYqsm?usp=drive_link",
-            "รพ.สต.หนองปรง": "https://drive.google.com/drive/folders/1_k8DLmrj5dWLN8OZJaiwLoMygqzPMZ2s?usp=drive_link",
-            "รพ.สต.ห้วยแม่เพรียง": "https://drive.google.com/drive/folders/1582BeZRtU19YGFgEYcqKkPSwTDtrya3m?usp=drive_link",
-            "รพ.สต.ทับคาง": "https://drive.google.com/drive/folders/1DOHgyGdMbjtBAxAbvAyAXDabOSSqtVxm",
-            "รพ.สต.แหลมผักเบี้ย": "https://drive.google.com/drive/folders/1mdpN2ed8-HbgMeZaFamq4PrR0BPrbi5R",
-            "รพ.สต.บ้านบางสามแพรก": "https://drive.google.com/drive/folders/1KbctCEYAA27GUWsAtEFSWCTy8xhIEIuc",
-            "รพ.สต.บางขุนไทร": "https://drive.google.com/drive/folders/131AYSSlD2NoEgG9ZcDU96CVBD8eg1mda",
-            "รพ.สต.บางตะบูน": "https://drive.google.com/drive/folders/1vMCUb1ZC2OFnJhTytS_QH8OdKjYXxs43",
-            "รพ.สต.บ้านพุุม่วง": "https://drive.google.com/drive/folders/1pI_AdDJ7bPs5p9uMuUvFdaQkpDCvPEvm",
-            "รพ.สต.วัดเขาตะเครา": "https://drive.google.com/drive/folders/1mee2_eAMz-3lqus9pyh05LTOi0WqLJmY",
-            "รพ.สต.นิคมฯ": "https://drive.google.com/drive/folders/1tHYPubSaTohj0vUUd3wp376EQgbcYqsm",
-            "รพ.สต.บางครก": "https://drive.google.com/drive/folders/122t4LWTWaXcmktFUxEC6KzovkV6fTtN0",
-            "รพ.สต.บางตะบูนออก": "https://drive.google.com/drive/folders/1AXtLUZc1oARVR7ilHh5B42uJV1e5INoC",
-            "รพ.สต.บ้านบางหอ": "https://drive.google.com/drive/folders/1X-uhXLbTe4tSg9Tn3T7oBuNpPqrVL65C",
-            "รพ.สต.ปากทะเล": "https://drive.google.com/drive/folders/1aaMaShTuCFTL6L53u8QhHlJv9KnLW3k3",
-            "ศบส.เทศบาลเมืองชะอำ": "https://drive.google.com/drive/folders/1epsE6orsABbvOW-IDxjqveMu3ozDPwK-",
-            "หนองหญ้าปล้อง": "https://drive.google.com/drive/folders/18aKfqkAbadF2ul_JXpYAOrVVAriLbmNj",
-            "เขาย้อย": "https://drive.google.com/drive/folders/14E4-xPVR7-8VggywFLbK8KSzecHDecTK",
-            "ชะอำ": "https://drive.google.com/drive/folders/1EQXvjeGYlI4IWFFXBozeaJbZfr-sV88h",
-            "แก่งกระจาน": "https://drive.google.com/drive/folders/1gofqZngF2hGWNIyiIC31t2R2CveLVpdZ",
-            "บ้านแหลม": "https://drive.google.com/drive/folders/1UG9jZt10DgdgY-ToVKUNT1-ydfS403oN",
-            "ท่ายาง": "https://drive.google.com/drive/folders/1fDGPmMIKkhymEPBpcbPbxAvAT0qFbvdg",
-            "สสอ.บ้านแหลม": "https://drive.google.com/drive/folders/1h3WMO-NE-4Oa_WiKQmVrS7kvv47jisA9",
-            "สสอ.ท่ายาง": "https://drive.google.com/drive/folders/1sQkCSe3ePJsgj_UwxarCWAaQ8tRZZj48",
-            "รพ.สต.บ้านนาบัว": "https://drive.google.com/drive/folders/1xOZ_hu_cUkp4sGlbn_iL_s6gycYUzkg5",
-            "สอน.ป่าเด็ง": "https://drive.google.com/drive/folders/1Bjb81Rb42b0TnTlPCnC8X_fLRs9V-ehV",
-            "สสอ.ชะอำ": "https://drive.google.com/drive/folders/1jsKVQTITc8f0aIZtBWnWCM0LNB-c0wZF",
-            "รพ.สต.ไร่ใหม่พัฒนา": "https://drive.google.com/drive/folders/1d8STtc2dWLe5Ustpr9xsGgA6Ixf2m7HF",
-            "รพ.สต.บ้านทุ่งจับญวน": "https://drive.google.com/drive/folders/1Oncn7HlCdAXeBLgD4CHdDwcm3pbADA3e",
-            "รพ.สต.มาบปลาเค้า": "https://drive.google.com/drive/folders/1h4_oJG6JmiLI1vvBOvCuK9UA5ROLb1wf",
-        };
+        // ดึงลิงก์จาก Google Sheets
+        let hospitalLinks = {};
+        const LINKS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTNe0I0UR1Hfjw1qn_vyMGTWyweFFZl-aUFDq4ALllLY6clGxhKaxyM6orS_ZMxu3J5qAmU4WdvT2TL/pub?output=csv&gid=265832376';
+
+        async function loadHospitalLinks() {
+            try {
+                const response = await fetch(LINKS_CSV_URL);
+                const data = await response.text();
+                const rows = data.split('\n');
+                rows.forEach(rowStr => {
+                    const row = rowStr.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(cell => cell.trim().replace(/^"|"$/g, ''));
+                    if (row.length >= 2 && row[0]) {
+                        hospitalLinks[row[0]] = row[1];
+                    }
+                });
+                console.log('โหลดลิงก์หน่วยงานแล้ว:', Object.keys(hospitalLinks).length);
+            } catch (error) {
+                console.error('เกิดข้อผิดพลาดในการโหลดลิงก์:', error);
+            }
+        }
 
 
         function switchView(view) {
@@ -526,7 +500,10 @@
             });
         });
 
-        window.onload = fetchData;
+        window.onload = async () => {
+            await loadHospitalLinks();
+            fetchData();
+        };
     </script>
 </body>
 
