@@ -88,7 +88,7 @@
             </div>
 
             <div class="flex w-full md:w-auto gap-3">
-                <div class="relative flex-1 md:w-72">
+                <div class="relative flex-1 md:w-60">
                     <svg xmlns="http://www.w3.org/2000/svg"
                         class="absolute left-3 top-1/2 -translate-y-1/2 text-white/50 w-4 h-4" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -99,6 +99,12 @@
                     <input type="text" id="search-input" placeholder="ค้นหาหน่วยงาน..."
                         class="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-white/40 text-sm outline-none transition-all text-white placeholder-white/40">
                 </div>
+                <select id="status-filter-header"
+                    class="bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-white/40 cursor-pointer hidden sm:block">
+                    <option value="all" class="text-slate-800">ทั้งหมด</option>
+                    <option value="reported" class="text-slate-800">รายงานแล้ว</option>
+                    <option value="pending" class="text-slate-800">รอผล</option>
+                </select>
                 <button id="refresh-btn"
                     class="p-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 shadow-sm transition-all active:scale-95">
                     <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24"
@@ -135,7 +141,17 @@
                     <th class="p-4 text-sm font-bold uppercase text-slate-500 w-[180px]">วันที่ส่งตรวจ</th>
                     <th class="p-4 text-sm font-bold uppercase text-slate-500 w-[220px]">หน่วยงาน</th>
                     <th class="p-4 text-sm font-bold uppercase text-slate-500">ชื่อไฟล์</th>
-                    <th class="p-4 text-sm font-bold uppercase text-slate-500 text-center w-[150px]">สถานะ</th>
+                    <th class="p-4 text-sm font-bold uppercase text-slate-500 text-center w-[150px]">
+                        <div class="flex flex-col items-center gap-1">
+                            <span>สถานะ</span>
+                            <select id="status-filter-select"
+                                class="mt-1 text-[10px] font-medium bg-white border border-slate-200 rounded px-1.5 py-0.5 outline-none cursor-pointer hover:border-pink-300 transition-colors lowercase">
+                                <option value="all">ทั้งหมด</option>
+                                <option value="reported">รายงานแล้ว</option>
+                                <option value="pending">รอผล</option>
+                            </select>
+                        </div>
+                    </th>
                 </tr>
             </thead>
             <tbody id="desktop-tbody" class="divide-y divide-slate-100">
@@ -172,6 +188,7 @@
     let allData = [];
     let hospitalLinks = {};
     let searchTerm = '';
+    let selectedStatus = 'all';
     let currentPage = 1;
     const itemsPerPage = 10;
 
@@ -231,9 +248,16 @@
     const renderData = () => {
         const filtered = allData.filter(row => {
             const s = searchTerm.toLowerCase();
-            return row.agency.toLowerCase().includes(s) ||
+            const isReported = row.reportedAt && row.reportedAt.trim() !== '';
+            const matchesStatus = selectedStatus === 'all' ||
+                (selectedStatus === 'reported' && isReported) ||
+                (selectedStatus === 'pending' && !isReported);
+
+            return matchesStatus && (
+                row.agency.toLowerCase().includes(s) ||
                 row.fileName.toLowerCase().includes(s) ||
-                row.sentAt.toLowerCase().includes(s);
+                row.sentAt.toLowerCase().includes(s)
+            );
         });
 
         const desktopTbody = document.getElementById('desktop-tbody');
@@ -418,6 +442,20 @@
 
     document.getElementById('search-input').addEventListener('input', (e) => {
         searchTerm = e.target.value;
+        currentPage = 1;
+        renderData();
+    });
+
+    document.getElementById('status-filter-select').addEventListener('change', (e) => {
+        selectedStatus = e.target.value;
+        document.getElementById('status-filter-header').value = selectedStatus;
+        currentPage = 1;
+        renderData();
+    });
+
+    document.getElementById('status-filter-header').addEventListener('change', (e) => {
+        selectedStatus = e.target.value;
+        document.getElementById('status-filter-select').value = selectedStatus;
         currentPage = 1;
         renderData();
     });
