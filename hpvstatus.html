@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบตรวจสอบสถานะรายงาน</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -32,8 +33,65 @@
                 transform: rotate(360deg);
             }
         }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #be185d;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: loader-spin 1s linear infinite;
+        }
+
+        @keyframes loader-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Announcement Ticker Styles */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .animate-marquee {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+            will-change: transform;
+        }
+
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
     </style>
 </head>
+
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-white z-[100] flex items-center justify-center flex-col gap-4 transition-opacity duration-500">
+        <div class="loader"></div>
+        <p class="font-medium text-slate-600 animate-pulse">กำลังเตรียมข้อมูลสถานะ...</p>
+    </div>
+
+    <!-- Announcement Ticker -->
+    <div id="announcement-container" class="hidden bg-slate-900 text-white overflow-hidden relative z-[60] border-b border-white/10">
+        <div class="max-w-7xl mx-auto flex items-center h-10">
+            <div class="bg-pink-600 px-4 h-full flex items-center text-xs font-bold uppercase tracking-wider shrink-0 z-10 shadow-xl">
+                <span class="flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+                    </svg>
+                    ประกาศ
+                </span>
+            </div>
+            <div class="flex-1 overflow-hidden relative">
+                <div id="announcement-text" class="whitespace-nowrap animate-marquee py-2 text-sm font-bold text-red-500">
+                    กำลังตรวจสอบประกาศล่าสุด...
+                </div>
+            </div>
+        </div>
+    </div>
 
 <!-- Header -->
 <header
@@ -182,7 +240,8 @@
 </main>
 
 <script>
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTNe0I0UR1Hfjw1qn_vyMGTWyweFFZl-aUFDq4ALllLY6clGxhKaxyM6orS_ZMxu3J5qAmU4WdvT2TL/pub?gid=86987800&single=true&output=csv';
+    const SPREADSHEET_ID = '1474eE5jGXvnw7QrhOhQwt96VJGLJpTG2vTPu4OVbHxM';
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=86987800`;
     const LINKS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTNe0I0UR1Hfjw1qn_vyMGTWyweFFZl-aUFDq4ALllLY6clGxhKaxyM6orS_ZMxu3J5qAmU4WdvT2TL/pub?output=csv&gid=265832376';
 
     let allData = [];
@@ -417,38 +476,64 @@
         const skeleton = document.getElementById('loading-skeleton');
         const errorContainer = document.getElementById('error-container');
         const footer = document.getElementById('footer-text');
+        const loadingOverlay = document.getElementById('loading-overlay');
 
-        refreshIcon.classList.add('animate-spin-custom');
-        skeleton.classList.remove('hidden');
-        errorContainer.classList.add('hidden');
+        if (refreshIcon) refreshIcon.classList.add('animate-spin-custom');
+        if (skeleton) skeleton.classList.remove('hidden');
+        if (errorContainer) errorContainer.classList.add('hidden');
+        if (loadingOverlay) {
+            loadingOverlay.classList.remove('hidden');
+            loadingOverlay.style.opacity = '1';
+        }
 
         try {
             const response = await fetch(CSV_URL);
-            if (!response.ok) throw new Error('ไม่สามารถเข้าถึงข้อมูลได้');
+            if (!response.ok) throw new Error('ไม่สามารถเข้าถึงข้อมูลได้ (ตรวจสอบสิทธิ์การเข้าถึง Spreadsheet)');
             const csvText = await response.text();
-            const rows = parseCSV(csvText);
+            
+            // ใช้ PapaParse ประมวลผลข้อมูลแทน Parser เดิม (รวดเร็วกว่ามากสำหรับข้อมูลขนาดใหญ่)
+            Papa.parse(csvText, {
+                header: false,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    const rows = results.data;
+                    allData = rows.slice(1)
+                        .map((cols, index) => ({
+                            id: index,
+                            sentAt: cols[0] || '',
+                            agency: cols[1] || '',
+                            fileName: cols[3] || '',
+                            reportedAt: cols[6] || '',
+                            link: cols[7] || '',
+                            timestamp: parseDateTime(cols[0])
+                        }))
+                        .filter(item => item.agency && item.agency.trim() !== '' && !item.agency.includes('ชื่อหน่วยงาน'))
+                        .sort((a, b) => b.timestamp - a.timestamp);
 
-            allData = rows.slice(1)
-                .map((cols, index) => ({
-                    id: index,
-                    sentAt: cols[0] || '',
-                    agency: cols[1] || '',
-                    fileName: cols[3] || '',
-                    reportedAt: cols[6] || '',
-                    link: cols[7] || '',
-                    timestamp: parseDateTime(cols[0])
-                }))
-                .filter(item => item.agency && item.agency.trim() !== '' && !item.agency.includes('ชื่อหน่วยงาน'))
-                .sort((a, b) => b.timestamp - a.timestamp);
+                    renderData();
+                    finishLoading();
+                },
+                error: function(err) {
+                    throw new Error('เกิดข้อผิดพลาดในการประมวลผลข้อมูล: ' + err.message);
+                }
+            });
 
-            renderData();
-            footer.classList.remove('hidden');
         } catch (err) {
-            errorContainer.classList.remove('hidden');
+            if (errorContainer) errorContainer.classList.remove('hidden');
             document.getElementById('error-message').innerText = err.message;
-        } finally {
-            refreshIcon.classList.remove('animate-spin-custom');
-            skeleton.classList.add('hidden');
+            finishLoading();
+        }
+
+        function finishLoading() {
+            if (refreshIcon) refreshIcon.classList.remove('animate-spin-custom');
+            if (skeleton) skeleton.classList.add('hidden');
+            if (footer) footer.classList.remove('hidden');
+            if (loadingOverlay) {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.classList.add('hidden');
+                }, 500);
+            }
         }
     };
 
@@ -476,9 +561,32 @@
 
     window.onload = async () => {
         await loadHospitalLinks();
-        fetchData();
+        await fetchData(); // โหลดข้อมูลหลักให้จบ
+        setTimeout(fetchAnnouncements, 1500); // ดีเลย์ประกาศไว้ท้ายสุด เพื่อไม่ให้รบกวนหน้าเว็บตอนเริ่ม
     };
 
+    async function fetchAnnouncements() {
+        const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTNe0I0UR1Hfjw1qn_vyMGTWyweFFZl-aUFDq4ALllLY6clGxhKaxyM6orS_ZMxu3J5qAmU4WdvT2TL/pub?output=csv&gid=671107847';
+        try {
+            const response = await fetch(URL);
+            const data = await response.text();
+            const lines = data.split('\n').filter(line => line.trim());
+            
+            // Parse CSV and get Column A
+            const messages = lines.map(line => {
+                const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
+                return cols[0];
+            }).filter(m => m && m !== 'ข้อความประกาศ' && m !== 'Announcement' && m !== 'announcement');
+
+            if (messages.length > 0) {
+                const tickerText = messages.join(' •   • ');
+                document.getElementById('announcement-text').innerText = tickerText;
+                document.getElementById('announcement-container').classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Error loading announcements:', error);
+        }
+    }
 </script>
 </body>
 

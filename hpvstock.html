@@ -37,10 +37,45 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Announcement Ticker Styles */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .animate-marquee {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+            will-change: transform;
+        }
+
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
     </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800">
+
+    <!-- Announcement Ticker -->
+    <div id="announcement-container" class="hidden bg-slate-900 text-white overflow-hidden relative z-[60] border-b border-white/10">
+        <div class="max-w-7xl mx-auto flex items-center h-10">
+            <div class="bg-pink-600 px-4 h-full flex items-center text-xs font-bold uppercase tracking-wider shrink-0 z-10 shadow-xl">
+                <span class="flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+                    </svg>
+                    ประกาศ
+                </span>
+            </div>
+            <div class="flex-1 overflow-hidden relative">
+                <div id="announcement-text" class="whitespace-nowrap animate-marquee py-2 text-sm font-bold text-red-500">
+                    กำลังตรวจสอบประกาศล่าสุด...
+                </div>
+            </div>
+        </div>
+    </div>
 
     <header
         class="bg-gradient-to-r from-pink-700 via-pink-800 to-indigo-900 text-white py-12 px-6 shadow-lg relative overflow-hidden">
@@ -350,7 +385,33 @@
                 }
             });
         }
-        window.onload = init;
+        window.onload = async () => {
+            await init();
+            setTimeout(fetchAnnouncements, 1500); // ดีเลย์การดึงประกาศให้ทำงานทีหลังสุด
+        };
+
+        async function fetchAnnouncements() {
+            const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTNe0I0UR1Hfjw1qn_vyMGTWyweFFZl-aUFDq4ALllLY6clGxhKaxyM6orS_ZMxu3J5qAmU4WdvT2TL/pub?output=csv&gid=671107847';
+            try {
+                const response = await fetch(URL);
+                const data = await response.text();
+                const lines = data.split('\n').filter(line => line.trim());
+                
+                // Parse CSV and get Column A
+                const messages = lines.map(line => {
+                    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
+                    return cols[0];
+                }).filter(m => m && m !== 'ข้อความประกาศ' && m !== 'Announcement' && m !== 'announcement');
+
+                if (messages.length > 0) {
+                    const tickerText = messages.join(' •   • ');
+                    document.getElementById('announcement-text').innerText = tickerText;
+                    document.getElementById('announcement-container').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+            }
+        }
     </script>
 </body>
 
