@@ -383,6 +383,9 @@
                 return btn;
             };
 
+            // First Page Button
+            paginationContainer.appendChild(createPageBtn(1, 'หน้าแรก', false, currentPage === 1));
+
             // Prev Button
             paginationContainer.appendChild(createPageBtn(currentPage - 1, 'ก่อนหน้า', false, currentPage === 1));
 
@@ -397,6 +400,15 @@
 
             // Next Button
             paginationContainer.appendChild(createPageBtn(currentPage + 1, 'ถัดไป', false, currentPage === totalPages));
+
+            // Last Page Button
+            paginationContainer.appendChild(createPageBtn(totalPages, 'หน้าสุดท้าย', false, currentPage === totalPages));
+
+            // Total Pages Indicator
+            const pageIndicator = document.createElement('span');
+            pageIndicator.className = 'text-[11px] text-slate-400 font-medium ml-2';
+            pageIndicator.innerText = `หน้า ${currentPage} จาก ${totalPages}`;
+            paginationContainer.appendChild(pageIndicator);
         }
     };
 

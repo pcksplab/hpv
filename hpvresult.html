@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
+    <style type="text/tailwindcss">
         body {
             font-family: 'Kanit', sans-serif;
         }
@@ -430,7 +430,7 @@
 
             document.getElementById('data-table-foot').innerHTML = `
                 <tr class="bg-slate-100">
-                    <td class="px-6 py-4 sticky-col z-10 text-left">รวมทั้งหมด</td>
+                    <td class="px-6 py-4 sticky-col z-10 text-left bg-slate-100">รวมทั้งหมด</td>
                     <td class="px-4 py-4 border-r"></td>
                     <td class="text-right px-4 border-r">${totals.s16.toLocaleString()}</td>
                     <td class="text-right px-4 border-r">${totals.s18.toLocaleString()}</td>
@@ -468,7 +468,30 @@
                     labels: ['Negative', 'HPV 16', 'HPV 18', 'Other HR', 'Invalid', 'LBC'],
                     datasets: [{ data: [s.neg, s.pos16, s.pos18, s.posOther, s.invalid, s.lbc], backgroundColor: ['#10b981', '#e11d48', '#fb7185', '#fb923c', '#94a3b8', '#818cf8'], borderWidth: 0 }]
                 },
-                options: { maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: { size: 11 } } } } }
+                options: {
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                font: { size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value.toLocaleString()} ราย (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
             });
 
             if (chartInstances.bar) chartInstances.bar.destroy();
@@ -476,7 +499,14 @@
             chartInstances.bar = new Chart(document.getElementById('hospitalBarChart'), {
                 type: 'bar',
                 data: {
-                    labels: chartData.map(h => h.name.length > 12 ? h.name.substring(0, 10) + '...' : h.name),
+                    labels: chartData.map(h => {
+                        const name = h.name;
+                        if (name.length > 15) {
+                            const splitIdx = Math.ceil(name.length / 2);
+                            return [name.substring(0, splitIdx), name.substring(splitIdx)];
+                        }
+                        return name;
+                    }),
                     datasets: [
                         { label: 'HPV 16', data: chartData.map(h => h.n16), backgroundColor: '#e11d48' },
                         { label: 'HPV 18', data: chartData.map(h => h.n18), backgroundColor: '#fb7185' },
@@ -487,8 +517,43 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { x: { stacked: true }, y: { stacked: true } },
-                    plugins: { legend: { position: 'bottom' } }
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                minRotation: 0,
+                                font: { size: 10 }
+                            }
+                        },
+                        y: { stacked: true }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y || 0;
+                                    const datasetIndices = context.chart.data.datasets.map((_, i) => i);
+                                    const totalForBar = datasetIndices.reduce((sum, idx) => {
+                                        return sum + (context.chart.data.datasets[idx].data[context.dataIndex] || 0);
+                                    }, 0);
+                                    const percentage = totalForBar > 0 ? ((value / totalForBar) * 100).toFixed(1) : 0;
+                                    return `${label}: ${value.toLocaleString()} ราย (${percentage}%)`;
+                                },
+                                footer: (tooltipItems) => {
+                                    const total = tooltipItems.reduce((sum, item) => sum + (item.parsed.y || 0), 0);
+                                    return `รวมทั้งหมด: ${total.toLocaleString()} ราย`;
+                                }
+                            }
+                        }
+                    }
                 }
             });
         }
