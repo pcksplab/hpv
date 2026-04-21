@@ -177,19 +177,21 @@
                 <table class="min-w-full divide-y divide-slate-200">
                     <thead class="bg-slate-50 text-[11px] font-bold text-slate-600">
                         <tr>
-                            <th rowspan="2" class="px-6 py-4 text-left border-r sticky left-0 bg-slate-100 z-20">หน่วยงาน
+                            <th rowspan="2" class="px-6 py-4 text-left border-r sticky left-0 bg-slate-100 z-20 border-b">หน่วยงาน
                             </th>
-                            <th colspan="2" class="bg-pink-100/40 border-r border-b text-center">Self-test</th>
-                            <th colspan="3" class="bg-indigo-100/40 border-r border-b text-center">Clinician</th>
-                            <th rowspan="2" class="px-4 py-4 text-right border-r bg-slate-100/50">ส่งตรวจรวม</th>
-                            <th rowspan="2" class="px-4 py-4 text-right bg-orange-50 text-orange-700">คงเหลือ</th>
+                            <th colspan="3" class="bg-pink-100/40 border-r border-b text-center">Self-test</th>
+                            <th colspan="4" class="bg-indigo-100/40 border-r border-b text-center">Clinician</th>
+                            <th rowspan="2" class="px-4 py-4 text-right border-r bg-slate-100/50 border-b">ส่งตรวจรวม</th>
+                            <th rowspan="2" class="px-4 py-4 text-right bg-orange-50 text-orange-700 border-b">รวมคงเหลือ</th>
                         </tr>
                         <tr class="bg-slate-50/80">
-                            <th class="px-4 py-2 border-r">เบิก</th>
-                            <th class="px-4 py-2 border-r">ส่งHPV</th>
-                            <th class="px-4 py-2 border-r">เบิก</th>
-                            <th class="px-4 py-2 border-r">ส่งHPV</th>
-                            <th class="px-4 py-2 border-r">ส่งLBC</th>
+                            <th class="px-4 py-2 border-r border-b">เบิก</th>
+                            <th class="px-4 py-2 border-r border-b">ส่งHPV</th>
+                            <th class="px-4 py-2 border-r border-b text-rose-600 bg-rose-50/30">คงเหลือ</th>
+                            <th class="px-4 py-2 border-r border-b">เบิก</th>
+                            <th class="px-4 py-2 border-r border-b">ส่งHPV</th>
+                            <th class="px-4 py-2 border-r border-b">ส่งLBC</th>
+                            <th class="px-4 py-2 border-r border-b text-indigo-600 bg-indigo-50/30">คงเหลือ</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="bg-white divide-y divide-slate-100 text-xs"></tbody>
@@ -227,6 +229,8 @@
                             return {
                                 name: row[0],
                                 sReq, sSent, cReq, cHpv, cLbc,
+                                sRem: Math.max(0, sReq - sSent),
+                                cRem: Math.max(0, cReq - (cHpv + cLbc)),
                                 totalSent,
                                 totalReq,
                                 remaining: Math.max(0, totalReq - totalSent)
@@ -263,11 +267,13 @@
                         <td class="px-6 py-3 font-medium border-r bg-white sticky left-0 z-10">${d.name}</td>
                         <td class="text-right px-4 border-r">${d.sReq.toLocaleString()}</td>
                         <td class="text-right px-4 border-r text-pink-600 font-bold">${d.sSent.toLocaleString()}</td>
+                        <td class="text-right px-4 border-r text-rose-700 bg-rose-50/30 font-semibold">${d.sRem.toLocaleString()}</td>
                         <td class="text-right px-4 border-r">${d.cReq.toLocaleString()}</td>
                         <td class="text-right px-4 border-r">${d.cHpv.toLocaleString()}</td>
                         <td class="text-right px-4 border-r">${d.cLbc.toLocaleString()}</td>
-                        <td class="text-right px-4 font-bold text-indigo-700 border-r bg-slate-50/40">${d.totalSent.toLocaleString()}</td>
-                        <td class="text-right px-4 font-bold text-orange-700 bg-orange-50/30">${d.remaining.toLocaleString()}</td>
+                        <td class="text-right px-4 border-r text-indigo-700 bg-indigo-50/30 font-semibold">${d.cRem.toLocaleString()}</td>
+                        <td class="text-right px-4 font-bold text-indigo-900 border-r bg-slate-50/40">${d.totalSent.toLocaleString()}</td>
+                        <td class="text-right px-4 font-bold text-orange-700 bg-orange-50/40">${d.remaining.toLocaleString()}</td>
                     </tr>`;
             });
 
