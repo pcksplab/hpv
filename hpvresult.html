@@ -93,18 +93,23 @@
 <body class="bg-slate-50 text-slate-800">
 
     <!-- Announcement Ticker -->
-    <div id="announcement-container" class="hidden bg-slate-900 text-white overflow-hidden relative z-[60] border-b border-white/10">
+    <div id="announcement-container"
+        class="hidden bg-slate-900 text-white overflow-hidden relative z-[60] border-b border-white/10">
         <div class="max-w-7xl mx-auto flex items-center h-10">
-            <div class="bg-pink-600 px-4 h-full flex items-center text-xs font-bold uppercase tracking-wider shrink-0 z-10 shadow-xl">
+            <div
+                class="bg-pink-600 px-4 h-full flex items-center text-xs font-bold uppercase tracking-wider shrink-0 z-10 shadow-xl">
                 <span class="flex items-center gap-2">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+                        <path
+                            d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z">
+                        </path>
                     </svg>
                     ประกาศ
                 </span>
             </div>
             <div class="flex-1 overflow-hidden relative">
-                <div id="announcement-text" class="whitespace-nowrap animate-marquee py-2 text-sm font-bold text-red-500">
+                <div id="announcement-text"
+                    class="whitespace-nowrap animate-marquee py-2 text-sm font-bold text-red-500">
                     กำลังตรวจสอบประกาศล่าสุด...
                 </div>
             </div>
@@ -260,12 +265,15 @@
                                 <div class="text-[10px] text-slate-400 font-normal">(กดเพื่อดูผล)</div>
                             </th>
                             <th class="px-2 py-4 text-center border-r" rowspan="2">
-                                ดูเฉพาะ<br>ผล Pos</th>
+                                ดูเฉพาะ<br>ผล HPV Pos</th>
                             <th class="px-4 py-2 text-center border-r border-b bg-pink-100/40" colspan="4">Self-test
                             </th>
                             <th class="px-4 py-2 text-center border-r border-b bg-indigo-100/40" colspan="4">Clinician
                             </th>
-                            <th class="px-4 py-4 text-center border-r bg-slate-100/50" rowspan="2">LBC</th>
+                            <th class="px-4 py-4 text-center border-r bg-slate-100/50" rowspan="2">
+                                LBC
+                                <div class="text-[10px] text-blue-600 font-medium">(ดูผลLBC)</div>
+                            </th>
                             <th class="px-4 py-4 text-center bg-slate-100" rowspan="2">รวม</th>
                         </tr>
                         <tr class="bg-slate-50/80">
@@ -424,22 +432,30 @@
                 const link = hospitalLinks[item.name];
                 let nameHtml = `<span>${item.name}</span>`;
                 let pdfBtnHtml = '';
+                let lbcHtml = item.lbc || '-';
+                let lbcTdAttr = 'class="text-right px-4 font-bold border-r"';
 
                 if (link) {
                     const folderId = link.split('/folders/')[1]?.split('?')[0];
-                    const pdfLink = `https://drive.google.com/drive/u/0/search?q=type:pdf%20parent:${folderId}`;
+                    const pdfLink = `https://drive.google.com/drive/u/0/search?q=title:HPV%20type:pdf%20parent:${folderId}`;
+                    const lbcPdfLink = `https://drive.google.com/drive/u/0/search?q=title:LBC%20type:pdf%20parent:${folderId}`;
 
                     nameHtml = `
                         <a href="${link}" target="_blank" class="hover:text-pink-700 hover:underline decoration-pink-300 transition-all font-semibold text-sm">${item.name}</a>
                     `;
 
                     pdfBtnHtml = `
-                        <a href="${pdfLink}" target="_blank" class="pdf-icon" title="ค้นหา PDF รายงานผล">
+                        <a href="${pdfLink}" target="_blank" class="pdf-icon" title="กดเพื่อดูผล HPV Pos">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0118 7.586V19a2 2 0 01-2 2z"></path>
                             </svg>
                         </a>
                     `;
+
+                    if (item.lbc > 0) {
+                        lbcHtml = `<span class="text-indigo-600 group-hover:underline">${item.lbc}</span>`;
+                        lbcTdAttr = `class="text-right px-4 font-bold border-r cursor-pointer hover:bg-indigo-50 transition-all group" onclick="window.open('${lbcPdfLink}', '_blank')" title="กดเพื่อดูผล LBC"`;
+                    }
                 }
 
                 tr.innerHTML = `
@@ -457,7 +473,7 @@
                     <td class="text-right px-4 border-r text-rose-500 font-semibold">${item.c18 || '-'}</td>
                     <td class="text-right px-4 border-r text-orange-500">${item.cOther || '-'}</td>
                     <td class="text-right px-4 border-r text-emerald-600">${item.cNeg || '-'}</td>
-                    <td class="text-right px-4 font-bold border-r">${item.lbc || '-'}</td>
+                    <td ${lbcTdAttr}>${lbcHtml}</td>
                     <td class="text-right px-4 font-bold bg-slate-50/40">${item.total.toLocaleString()}</td>
                 `;
                 tableBody.appendChild(tr);
@@ -612,7 +628,7 @@
                 const response = await fetch(URL);
                 const data = await response.text();
                 const lines = data.split('\n').filter(line => line.trim());
-                
+
                 // Parse CSV and get Column A
                 const messages = lines.map(line => {
                     const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
