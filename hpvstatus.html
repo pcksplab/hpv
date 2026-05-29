@@ -7,10 +7,10 @@
     <title>ระบบตรวจสอบสถานะรายงาน</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Kanit', sans-serif;
+            font-family: 'Sarabun', sans-serif;
         }
 
         .line-clamp-2 {
@@ -73,6 +73,14 @@
         .animate-marquee:hover {
             animation-play-state: paused;
         }
+
+        #desktop-tbody tr {
+            height: 40px;
+        }
+        #desktop-tbody tr td {
+            height: 40px;
+            overflow: hidden;
+        }
     </style>
 </head>
 
@@ -112,88 +120,89 @@
 
     <!-- Header -->
     <header
-        class="bg-gradient-to-r from-pink-700 via-pink-800 to-indigo-900 border-b border-white/10 shadow-lg relative overflow-hidden py-12 px-6">
-        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-            <div class="flex items-center gap-3 w-full lg:w-auto">
+        class="bg-gradient-to-r from-pink-700 via-pink-800 to-indigo-900 border-b border-white/10 shadow-lg relative overflow-hidden py-6 px-4">
+        <div class="max-w-7xl mx-auto flex items-center gap-3">
+            <!-- Left: Title -->
+            <div class="flex items-center gap-2 shrink-0">
                 <div>
-                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white">สถานะการตรวจ HPV
+                    <h1 class="text-xl md:text-2xl font-bold tracking-tight text-white">สถานะการตรวจ HPV
                     </h1>
-                    <p id="status-text" class="text-pink-100 mt-2 text-lg">กำลังโหลดข้อมูล...</p>
+                    <p id="status-text" class="text-pink-100 mt-0 text-xs">กำลังโหลดข้อมูล...</p>
                 </div>
             </div>
 
-            <div class="flex flex-col items-end gap-4 w-full lg:w-auto">
-                <div
-                    class="grid grid-cols-2 md:flex bg-black/20 p-1 rounded-xl backdrop-blur-md border border-white/10 shadow-inner w-full lg:w-auto overflow-hidden">
-                    <a href="https://forms.gle/g4mNd6raXNv1xv8t6" target="_blank"
-                        class="px-3 py-2 md:px-5 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all hover:bg-white/20 flex items-center justify-center md:justify-start gap-2 text-white">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                            </path>
-                        </svg>
-                        <span class="truncate">Linkส่งตรวจ</span>
-                    </a>
-                    <a href="hpvstatus.html"
-                        class="px-3 py-2 md:px-5 md:py-2.5 rounded-lg text-xs md:text-sm font-medium bg-white text-indigo-900 shadow-sm flex items-center justify-center md:justify-start gap-2">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                            </path>
-                        </svg>
-                        <span class="truncate">ตรวจสอบสถานะ</span>
-                    </a>
-                    <a href="hpvstock.html"
-                        class="px-3 py-2 md:px-5 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all hover:bg-white/20 flex items-center justify-center md:justify-start gap-2 text-white">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                        <span class="truncate">สถิติการเบิก</span>
-                    </a>
-                    <a href="hpvresult.html"
-                        class="px-3 py-2 md:px-5 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all hover:bg-white/20 flex items-center justify-center md:justify-start gap-2 text-white">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                            </path>
-                        </svg>
-                        <span class="truncate">สถิติการตรวจ</span>
-                    </a>
+            <!-- Center: Search bar -->
+            <div class="flex-1 flex justify-center">
+                <div class="relative w-full max-w-sm group">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-pink-600 w-4 h-4 transition-colors z-10"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                    <input type="text" id="search-input" list="search-suggestions"
+                        placeholder="ค้นหา..."
+                        class="w-full pl-9 pr-3 py-1.5 bg-white/20 border border-white/30 rounded-xl focus:bg-white focus:text-slate-900 focus:ring-4 focus:ring-pink-500/30 focus:border-pink-500 text-sm outline-none transition-all text-white placeholder-white/60 shadow-lg group-hover:bg-white/30">
+                    <datalist id="search-suggestions"></datalist>
                 </div>
+                <select id="status-filter-header"
+                    class="bg-white/10 border border-white/20 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:ring-2 focus:ring-white/40 cursor-pointer hidden sm:block ml-2">
+                    <option value="all" class="text-slate-800">ทั้งหมด</option>
+                    <option value="reported" class="text-slate-800">รายงานแล้ว</option>
+                    <option value="pending" class="text-slate-800">รอผล</option>
+                </select>
+                <button id="refresh-btn"
+                    class="p-1.5 bg-white/10 border border-white/20 rounded-lg text-white hover:bg-white/20 shadow-sm transition-all active:scale-95 ml-1.5">
+                    <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                        <path d="M21 3v5h-5" />
+                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                        <path d="M8 16H3v5" />
+                    </svg>
+                </button>
+            </div>
 
-                <div class="flex w-full md:w-auto gap-3">
-                    <div class="relative flex-1 md:w-96 group">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-pink-600 w-5 h-5 transition-colors z-10"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8" />
-                            <path d="m21 21-4.3-4.3" />
-                        </svg>
-                        <input type="text" id="search-input" list="search-suggestions"
-                            placeholder="ค้นหาหน่วยงาน ชื่อไฟล์ หรือวันที่..."
-                            class="w-full pl-12 pr-4 py-3 bg-white/20 border-2 border-white/30 rounded-2xl focus:bg-white focus:text-slate-900 focus:ring-4 focus:ring-pink-500/30 focus:border-pink-500 text-base outline-none transition-all text-white placeholder-white/60 shadow-lg group-hover:bg-white/30">
-                        <datalist id="search-suggestions"></datalist>
-                    </div>
-                    <select id="status-filter-header"
-                        class="bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-white/40 cursor-pointer hidden sm:block">
-                        <option value="all" class="text-slate-800">ทั้งหมด</option>
-                        <option value="reported" class="text-slate-800">รายงานแล้ว</option>
-                        <option value="pending" class="text-slate-800">รอผล</option>
-                    </select>
-                    <button id="refresh-btn"
-                        class="p-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 shadow-sm transition-all active:scale-95">
-                        <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-                            <path d="M21 3v5h-5" />
-                            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-                            <path d="M8 16H3v5" />
-                        </svg>
-                    </button>
-                </div>
+            <!-- Right: Nav buttons -->
+            <div
+                class="grid grid-cols-2 md:flex bg-black/20 p-0.5 rounded-lg backdrop-blur-md border border-white/10 shadow-inner overflow-hidden shrink-0">
+                <a href="https://forms.gle/g4mNd6raXNv1xv8t6" target="_blank"
+                    class="px-2 py-1.5 md:px-3 md:py-1.5 rounded-md text-[11px] md:text-xs font-medium transition-all hover:bg-white/20 flex items-center justify-center md:justify-start gap-1.5 text-white">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    <span class="truncate">Linkส่งตรวจ</span>
+                </a>
+                <a href="hpvstatus.html"
+                    class="px-2 py-1.5 md:px-3 md:py-1.5 rounded-md text-[11px] md:text-xs font-medium bg-white text-indigo-900 shadow-sm flex items-center justify-center md:justify-start gap-1.5">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    <span class="truncate">ตรวจสอบสถานะ</span>
+                </a>
+                <a href="hpvstock.html"
+                    class="px-2 py-1.5 md:px-3 md:py-1.5 rounded-md text-[11px] md:text-xs font-medium transition-all hover:bg-white/20 flex items-center justify-center md:justify-start gap-1.5 text-white">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                    <span class="truncate">สถิติการเบิก</span>
+                </a>
+                <a href="hpvresult.html"
+                    class="px-2 py-1.5 md:px-3 md:py-1.5 rounded-md text-[11px] md:text-xs font-medium transition-all hover:bg-white/20 flex items-center justify-center md:justify-start gap-1.5 text-white">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                        </path>
+                    </svg>
+                    <span class="truncate">สถิติการตรวจ</span>
+                </a>
             </div>
         </div>
     </header>
@@ -214,24 +223,25 @@
         <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <table class="w-full text-left border-collapse table-fixed">
                 <thead>
-                    <tr class="bg-slate-50 border-b border-slate-200">
-                        <th class="p-4 text-base font-bold uppercase text-slate-500 w-[170px]">วันที่ส่งตรวจ</th>
-                        <th class="p-4 text-xs font-bold uppercase text-slate-400 w-[130px]">หน่วยงานหลัก</th>
-                        <th class="p-4 text-base font-bold uppercase text-slate-500 w-[240px]">หน่วยงาน</th>
-                        <th class="p-4 text-base font-bold uppercase text-slate-500">ชื่อไฟล์</th>
-                        <th class="p-4 text-base font-bold uppercase text-slate-500 text-center w-[120px]">ดาวน์โหลด
+                    <tr class="bg-slate-50">
+                        <th class="p-1 text-[11px] font-bold uppercase text-slate-500 w-[110px]">วันที่ส่งตรวจ</th>
+                        <th class="p-1 text-[9px] font-bold uppercase text-slate-400 w-[100px]">หน่วยงานหลัก</th>
+                        <th class="p-1 text-[11px] font-bold uppercase text-slate-500">หน่วยงาน</th>
+                        <th class="p-1 text-[11px] font-bold uppercase text-slate-500 w-[500px]">ชื่อไฟล์</th>
+                        <th class="p-1 text-[11px] font-bold uppercase text-slate-500 text-center w-[70px]">ดาวน์โหลด
                         </th>
-                        <th class="p-4 text-base font-bold uppercase text-slate-500 text-center w-[180px]">
-                            <div class="flex flex-col items-center gap-1">
+                        <th class="p-1 text-[11px] font-bold uppercase text-slate-500 text-center w-[90px]">
+                            <div class="flex flex-col items-center gap-0">
                                 <span>สถานะ</span>
                                 <select id="status-filter-select"
-                                    class="mt-1 text-xs font-medium bg-white border border-slate-200 rounded px-1.5 py-0.5 outline-none cursor-pointer hover:border-pink-300 transition-colors lowercase">
+                                    class="text-[9px] font-medium bg-white border border-slate-200 rounded px-0.5 py-0 outline-none cursor-pointer hover:border-pink-300 transition-colors lowercase">
                                     <option value="all">ทั้งหมด</option>
                                     <option value="reported">รายงานแล้ว</option>
                                     <option value="pending">รอผล</option>
                                 </select>
                             </div>
                         </th>
+                        <th class="p-1 text-[11px] font-bold uppercase text-slate-500 text-center w-[140px]">เวลารายงาน</th>
                     </tr>
                 </thead>
                 <tbody id="desktop-tbody" class="divide-y divide-slate-100">
@@ -351,7 +361,7 @@
             if (filtered.length === 0) {
                 const emptyMsg = `<div class="text-center py-12 text-slate-400 text-sm italic bg-white rounded-xl border border-dashed border-slate-300 w-full">ไม่พบข้อมูลที่ค้นหา</div>`;
                 mobileContainer.innerHTML = emptyMsg;
-                desktopTbody.innerHTML = `<tr><td colspan="4">${emptyMsg}</td></tr>`;
+                desktopTbody.innerHTML = `<tr><td colspan="7">${emptyMsg}</td></tr>`;
                 return;
             }
 
@@ -376,43 +386,45 @@
                 const tr = document.createElement('tr');
                 tr.className = `transition-colors group hover:bg-slate-50/50`;
                 tr.innerHTML = `
-                    <td class="p-4 text-base text-slate-500 font-mono italic">${row.sentAt}</td>
-                    <td class="p-4 text-xs text-slate-400 font-normal leading-tight">${row.mainAgency}</td>
-                    <td class="p-4 font-bold text-base text-slate-800 line-clamp-2">${agencyHtml}</td>
-                    <td class="p-4 text-base">
+                    <td class="p-1.5 text-sm text-slate-500 italic">${row.sentAt}</td>
+                    <td class="p-1.5 text-[11px] text-slate-400 font-normal leading-tight">${row.mainAgency}</td>
+                    <td class="p-1.5 font-semibold text-sm text-slate-800 line-clamp-1">${agencyHtml}</td>
+                    <td class="p-1.5 text-sm">
                         ${hasValidLink ? `
-                            <a href="${link}" target="_blank" class="text-indigo-600 hover:text-pink-600 hover:underline font-medium break-all transition-all line-clamp-2 leading-relaxed">
+                            <a href="${link}" target="_blank" class="text-indigo-600 hover:text-pink-600 hover:underline font-medium break-all transition-all line-clamp-1 leading-snug">
                                 ${row.fileName}
                             </a>
                         ` : `
-                            <span class="text-slate-600 line-clamp-2 break-all leading-relaxed">${row.fileName}</span>
+                            <span class="text-slate-600 line-clamp-1 break-all leading-snug">${row.fileName}</span>
                         `}
                     </td>
-                    <td class="p-4 text-center">
+                    <td class="p-1.5 text-center">
                         ${(hasValidLink && isReported) ? `
-                            <button onclick="downloadAsPdf('${link}', '${row.fileName.replace(/'/g, "\\'")}')" class="p-2.5 bg-pink-50 text-pink-600 hover:bg-pink-600 hover:text-white rounded-xl transition-all shadow-sm active:scale-90 group" title="ดาวน์โหลด PDF">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <button onclick="downloadAsPdf('${link}', '${row.fileName.replace(/'/g, "\\'")}')" class="p-1.5 bg-pink-50 text-pink-600 hover:bg-pink-600 hover:text-white rounded-lg transition-all shadow-sm active:scale-90 group" title="ดาวน์โหลด PDF">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
                             </button>
                         ` : `
-                            <span class="text-slate-200" title="${!isReported ? 'รอดำเนินการ' : 'ไม่มีไฟล์'}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <span class="text-slate-300" title="${!isReported ? 'รอดำเนินการ' : 'ไม่มีไฟล์'}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                                 </svg>
                             </span>
                         `}
                     </td>
-                    <td class="p-4 text-center">
+                    <td class="p-1.5 text-center">
                         ${isReported ? `
-                            <div class="flex flex-col items-center gap-2">
-                                <span class="px-4 py-2 rounded-full bg-emerald-500 text-white text-sm font-bold uppercase shadow-md border border-emerald-400 whitespace-nowrap">รายงานผลแล้ว</span>
-                                <span class="text-[11px] text-slate-500 font-mono font-bold whitespace-nowrap">${row.reportedAt.replace('|', ' ')}</span>
-                            </div>
+                            <span class="px-2 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-bold uppercase shadow-sm border border-emerald-400 whitespace-nowrap leading-tight">รายงานผลแล้ว</span>
                         ` : `
-                            <div class="flex flex-col items-center">
-                                <span class="px-4 py-2 rounded-full bg-amber-100 text-amber-700 text-sm font-bold uppercase border border-amber-200 shadow-sm whitespace-nowrap">รอดำเนินการ</span>
-                            </div>
+                            <span class="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-[10px] font-bold uppercase border border-amber-200 shadow-sm whitespace-nowrap leading-tight">รอดำเนินการ</span>
+                        `}
+                    </td>
+                    <td class="p-1.5 text-center">
+                        ${isReported ? `
+                            <span class="text-[10px] text-slate-500 font-mono font-bold whitespace-nowrap leading-tight">${row.reportedAt.replace('|', ' ')}</span>
+                        ` : `
+                            <span class="text-[10px] text-slate-300 font-mono font-bold whitespace-nowrap leading-tight">-</span>
                         `}
                     </td>
                 `;
