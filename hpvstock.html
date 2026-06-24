@@ -140,6 +140,12 @@
             <div class="card bg-gradient-to-br from-white to-blue-50 border-b-4 border-blue-500">
                 <p class="text-sm font-bold text-blue-600 uppercase">รับอุปกรณ์ไป</p>
                 <h2 id="kpi-requested" class="text-4xl font-black mt-1">0</h2>
+                <button onclick="showWithdrawalHistory()" class="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium py-2 px-3 rounded-lg transition-colors flex items-center justify-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                    </svg>
+                    ประวัติการเบิก
+                </button>
             </div>
             <div class="card bg-gradient-to-br from-white to-emerald-50 border-b-4 border-emerald-500">
                 <p class="text-sm font-bold text-emerald-600 uppercase">รายงานผลแล้ว</p>
@@ -199,6 +205,48 @@
             </div>
         </div>
     </main>
+
+    <!-- Withdrawal History Modal -->
+    <div id="withdrawal-modal" class="hidden fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-7xl w-full max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between p-6 border-b border-slate-200">
+                <h3 class="text-xl font-bold text-slate-800">ประวัติการเบิกอุปกรณ์</h3>
+                <button onclick="closeWithdrawalHistory()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1">
+                <div id="withdrawal-loading" class="hidden flex items-center justify-center py-12">
+                    <div class="loader"></div>
+                    <p class="ml-4 font-medium text-slate-600">กำลังโหลดข้อมูล...</p>
+                </div>
+                <div id="withdrawal-table-container" class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50 text-xs font-bold text-slate-600">
+                            <tr>
+                                <th class="px-4 py-3 text-left border-r">วันที่เบิก</th>
+                                <th class="px-4 py-3 text-left border-r">รพ./หน่วยงาน</th>
+                                <th class="px-4 py-3 text-center border-r">Self Test</th>
+                                <th class="px-4 py-3 text-center border-r">หมอเก็บ</th>
+                                <th class="px-4 py-3 text-center border-r">วันที่รับ</th>
+                                <th class="px-4 py-3 text-center border-r">EXP.</th>
+                                <th class="px-4 py-3 text-left border-r">หมายเหตุ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="withdrawal-table-body" class="bg-white divide-y divide-slate-100 text-xs"></tbody>
+                    </table>
+                </div>
+                <div id="withdrawal-empty" class="hidden text-center py-12 text-slate-500">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <p class="text-lg font-medium">ไม่พบข้อมูลประวัติการเบิก</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         const CSV_URL = `https://docs.google.com/spreadsheets/d/1474eE5jGXvnw7QrhOhQwt96VJGLJpTG2vTPu4OVbHxM/export?format=csv&gid=854312084`;
@@ -395,6 +443,80 @@
             await init();
             setTimeout(fetchAnnouncements, 1500); // ดีเลย์การดึงประกาศให้ทำงานทีหลังสุด
         };
+
+        function showWithdrawalHistory() {
+            document.getElementById('withdrawal-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            fetchWithdrawalHistory();
+        }
+
+        function closeWithdrawalHistory() {
+            document.getElementById('withdrawal-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function fetchWithdrawalHistory() {
+            const WITHDRAWAL_URL = `https://docs.google.com/spreadsheets/d/1474eE5jGXvnw7QrhOhQwt96VJGLJpTG2vTPu4OVbHxM/export?format=csv&gid=288187287`;
+            const loadingEl = document.getElementById('withdrawal-loading');
+            const tableContainer = document.getElementById('withdrawal-table-container');
+            const emptyEl = document.getElementById('withdrawal-empty');
+            const tableBody = document.getElementById('withdrawal-table-body');
+
+            loadingEl.classList.remove('hidden');
+            tableContainer.classList.add('hidden');
+            emptyEl.classList.add('hidden');
+
+            try {
+                const response = await fetch(WITHDRAWAL_URL);
+                const csv = await response.text();
+                
+                Papa.parse(csv, {
+                    header: false,
+                    skipEmptyLines: true,
+                    complete: function (results) {
+                        const data = results.data.filter((row, index) => {
+                            return index > 0;
+                        });
+
+                        loadingEl.classList.add('hidden');
+
+                        if (data.length === 0) {
+                            emptyEl.classList.remove('hidden');
+                            return;
+                        }
+
+                        tableContainer.classList.remove('hidden');
+                        tableBody.innerHTML = '';
+
+                        data.forEach(row => {
+                            const withdrawDate = row[0] || '';
+                            const hospital = row[1] || '';
+                            const selfTest = row[2] || '';
+                            const doctorStore = row[3] || '';
+                            const receiveDate = row[4] || '';
+                            const exp = row[5] || '';
+                            const note = row[6] || '';
+
+                            tableBody.innerHTML += `
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="px-4 py-3 border-r">${withdrawDate}</td>
+                                    <td class="px-4 py-3 border-r font-medium">${hospital}</td>
+                                    <td class="px-4 py-3 border-r text-center">${selfTest}</td>
+                                    <td class="px-4 py-3 border-r text-center">${doctorStore}</td>
+                                    <td class="px-4 py-3 border-r text-center">${receiveDate}</td>
+                                    <td class="px-4 py-3 border-r text-center">${exp}</td>
+                                    <td class="px-4 py-3 border-r">${note}</td>
+                                </tr>
+                            `;
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading withdrawal history:', error);
+                loadingEl.classList.add('hidden');
+                emptyEl.classList.remove('hidden');
+            }
+        }
 
         async function fetchAnnouncements() {
             const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTNe0I0UR1Hfjw1qn_vyMGTWyweFFZl-aUFDq4ALllLY6clGxhKaxyM6orS_ZMxu3J5qAmU4WdvT2TL/pub?output=csv&gid=671107847';
